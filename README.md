@@ -1,61 +1,39 @@
-# FAPS Wissenssystem
+# FAPS Knowledge Assistant
 
-Ein lokales Retrieval-Augmented Generation (RAG) System zur Organisation und zum Zugriff auf Informationen aus FAPS NAS und Webressourcen.
+Ein lokales Retrieval-Augmented Generation (RAG) System zur Organisation und zum Zugriff auf Informationen aus FAPS NAS und Webressourcen mittels phidata und LanceDB.
 
-## Funktionen
+![FAPS Logo](faps_logo.png)
 
-- 🔍 Durchsuche mehrere Datenquellen mit natürlicher Sprache
-- 🔗 Erhalte direkte Download-Links zu relevanten Dateien auf dem NAS
-- 🌐 Greife auf Informationen aus geschützten Webressourcen zu
+## Features
+
+- 🔍 Durchsuchen mehrerer Datenquellen mit natürlicher Sprache
+- 🔗 Direkte Download-Links zu relevanten Dateien auf dem NAS
+- 🌐 Zugriff auf Informationen aus authentifizierten Webressourcen
 - 🖥️ Vollständig lokale Bereitstellung für Datenschutz
-- 🐳 Docker-basiertes Setup für einfache Implementierung
-- 🔒 Sichere token-basierte Authentifizierung
-- 🌍 Verfügbar auf Deutsch und Englisch
+- 🐳 Docker-basiertes Setup für einfache Bereitstellung
 
 ## Datenquellen
 
 - **NAS**: `\\fapsroot.faps.uni-erlangen.de` (nur Lesezugriff)
-- **Wiki**: `https://wiki.faps.uni-erlangen.de/`
-- **Internes FAU**: `https://www.intern.fau.de/`
+- **Wiki**: `https://wiki.faps.uni-erlangen.de/` (erfordert Authentifizierung)
+- **Internal FAU**: `https://www.intern.fau.de/` (öffentlicher Zugang)
+- **IDM FAU**: `https://www.idm.fau.de/` (erfordert SSO-Authentifizierung)
 
 ## Architektur
 
-- **Frontend**: Gradio Webinterface mit FAPS Logo
-- **RAG-Engine**: LlamaIndex für Dokumentenverarbeitung und Retrieval
-- **Vektor-DB**: ChromaDB für Embedding-Speicherung
-- **LLM**: Ollama mit gpt-oss:20b
-- **Datenanbindungen**: Benutzerdefinierte Konnektoren für NAS und Webressourcen
-- **Authentifizierung**: Browser-Token-basierter Zugriff für gesicherte Ressourcen
+- **Framework**: phidata für KI-Anwendungsentwicklung
+- **Vector DB**: LanceDB für Embedding-Speicherung
+- **LLM**: Ollama mit gpt-oss:20b Modell
+- **Web Interface**: Integrierte phidata Web-UI in Deutsch
+- **Datenanbindungen**: Spezifische Konnektoren für NAS und Webressourcen
 
 ## Setup
 
-1. Repository klonen
-2. `docker-compose up` ausführen
-3. Webinterface unter `http://localhost:7860` aufrufen
-4. Onboarding-Prozess durchführen, um Authentifizierungs-Token einzurichten
+1. Dieses Repository klonen
+2. Docker, Docker Compose und NVIDIA Docker-Tools installieren
+3. `docker-compose up` ausführen
+4. Zugriff auf die Weboberfläche unter `http://localhost:8501`
 
-## Onboarding
+## Wichtig
 
-Erstbenutzer müssen einen Onboarding-Prozess abschließen:
-1. Zugriff auf das Webinterface
-2. Für Webressourcen, die eine Authentifizierung erfordern:
-   - Bei jedem Dienst in einem separaten Browser-Tab anmelden
-   - Authentifizierungs-Token durch den geführten Prozess generieren und bereitstellen
-   - Token werden sicher im lokalen Speicher des Browsers gespeichert
-
-## Konfiguration
-
-Die Anwendung verwendet folgende Standardeinstellungen:
-
-```
-# LLM-Konfiguration
-OLLAMA_MODEL=gpt-oss:20b
-```
-
-## Entwicklung
-
-Dieses Projekt enthält eine `.devcontainer`-Konfiguration für die einfache Entwicklung in VS Code.
-
-## Sprache
-
-Die Standardsprache der Benutzeroberfläche ist Deutsch. Die Sprache kann über die Einstellungen auf Englisch umgestellt werden.
+Dieses System arbeitet komplett lokal und erfordert keine externen Abhängigkeiten außer Docker, Docker Compose und NVIDIA Docker-Tools.
