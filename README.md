@@ -30,9 +30,59 @@ Ein lokales Retrieval-Augmented Generation (RAG) System zur Organisation und zum
 ## Schnellstart
 
 ### Voraussetzungen
+
+#### Grundausstattung
 - Docker und Docker Compose
 - Mindestens 8GB RAM (für gpt-oss:20b Modell)
-- GPU-Unterstützung empfohlen (NVIDIA mit CUDA)
+- 20GB freier Speicherplatz für Modelle und Daten
+
+#### GPU-Unterstützung (empfohlen für bessere Performance)
+Für optimale Leistung mit dem gpt-oss:20b Modell wird eine NVIDIA GPU mit CUDA-Unterstützung empfohlen.
+
+**NVIDIA Container Toolkit Installation (Ubuntu/WSL2):**
+
+1. **NVIDIA GPG-Schlüssel und Repository hinzufügen:**
+```bash
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+```
+
+2. **Paketlisten aktualisieren:**
+```bash
+sudo apt-get update
+```
+
+3. **NVIDIA Container Toolkit installieren:**
+```bash
+export NVIDIA_CONTAINER_TOOLKIT_VERSION=1.17.8-1
+sudo apt-get install -y \
+    nvidia-container-toolkit=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
+    nvidia-container-toolkit-base=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
+    libnvidia-container-tools=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
+    libnvidia-container1=${NVIDIA_CONTAINER_TOOLKIT_VERSION}
+```
+
+4. **Docker für NVIDIA Runtime konfigurieren:**
+```bash
+sudo nvidia-ctk runtime configure --runtime=docker
+sudo systemctl restart docker
+```
+
+5. **GPU-Zugriff testen:**
+```bash
+docker run --rm --gpus all nvidia/cuda:11.0.3-base-ubuntu20.04 nvidia-smi
+```
+
+**Hinweis für WSL2-Benutzer:**
+- Stellen Sie sicher, dass WSL2 mit GPU-Passthrough konfiguriert ist
+- Windows 11 oder Windows 10 mit aktuellen Updates erforderlich
+- NVIDIA-Treiber für Windows müssen installiert sein
+
+#### Netzwerk-Zugriff
+- Zugriff auf das FAU-Netzwerk oder VPN-Verbindung
+- Internetverbindung für Modell-Downloads
 
 ### Installation
 
