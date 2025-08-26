@@ -66,17 +66,34 @@ class RAGSystem:
         """Setup mock LLM for development when Ollama is not available"""
         logger.warning("Using mock LLM - Ollama not available")
         
-        class MockLLM:
-            def complete(self, prompt):
-                return f"Mock response for: {prompt[:100]}..."
-            
-            def chat(self, messages):
-                return f"Mock chat response for query about FAPS knowledge system."
+        from llama_index.core.base.llms.base import BaseLLM
+        from llama_index.core.base.embeddings.base import BaseEmbedding
+        from llama_index.core.llms.callbacks import llm_completion_callback
+        from typing import Any, List
         
-        class MockEmbedding:
-            def get_text_embedding(self, text):
+        class MockLLM(BaseLLM):
+            def complete(self, prompt, **kwargs):
+                from llama_index.core.base.llms.types import CompletionResponse
+                return CompletionResponse(text=f"Mock response for: {prompt[:100]}...")
+            
+            def chat(self, messages, **kwargs):
+                from llama_index.core.base.llms.types import ChatResponse, ChatMessage
+                return ChatResponse(message=ChatMessage(content="Mock chat response about FAPS knowledge system."))
+            
+            @property
+            def metadata(self):
+                return {"model_name": "mock"}
+        
+        class MockEmbedding(BaseEmbedding):
+            def _get_text_embedding(self, text: str) -> List[float]:
                 # Return a simple mock embedding
                 return [0.1] * 384
+            
+            def _get_query_embedding(self, query: str) -> List[float]:
+                return [0.1] * 384
+                
+            async def _aget_text_embedding(self, text: str) -> List[float]:
+                return self._get_text_embedding(text)
         
         Settings.llm = MockLLM()
         Settings.embed_model = MockEmbedding()
@@ -130,8 +147,15 @@ class RAGSystem:
             )
         ]
         
-        self.index = VectorStoreIndex.from_documents(mock_documents)
-        self.query_engine = self.index.as_query_engine()
+        try:
+            self.index = VectorStoreIndex.from_documents(mock_documents)
+            self.query_engine = self.index.as_query_engine()
+            logger.info("Mock vector store initialized successfully")
+        except Exception as e:
+            logger.error(f"Failed to create mock vector store: {e}")
+            # Create minimal fallback
+            self.index = None
+            self.query_engine = None
     
     def index_documents(self, force_refresh: bool = False) -> bool:
         """
@@ -144,6 +168,11 @@ class RAGSystem:
             bool: Success status
         """
         try:
+            # If no query engine is available, skip indexing
+            if not self.query_engine:
+                logger.warning("No query engine available - skipping document indexing")
+                return False
+                
             documents = []
             
             # Index NAS files
@@ -281,5 +310,12 @@ class RAGSystem:
         return self.index_documents(force_refresh=True)
 
 
-# Global RAG system instance
-rag_system = RAGSystem()
+# Global RAG system instance - Initialize lazily
+rag_system = None
+
+def get_rag_system():
+    """Get or create the RAG system instance"""
+    global rag_system
+    if rag_system is None:
+        rag_system = RAGSystem()
+    return rag_system

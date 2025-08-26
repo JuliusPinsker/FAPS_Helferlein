@@ -10,7 +10,7 @@ from datetime import datetime
 from src.config import settings
 from src.localization import localization
 from src.auth import auth_manager
-from src.rag_system import rag_system
+from src.rag_system import get_rag_system
 from src.nas_connector import NASConnector
 
 # Setup logging
@@ -50,6 +50,7 @@ class FAPSKnowledgeApp:
         
         try:
             # Query the RAG system
+            rag_system = get_rag_system()
             result = rag_system.query(question, language)
             
             response = result.get("response", "")
@@ -153,6 +154,7 @@ class FAPSKnowledgeApp:
     def get_system_status(self) -> str:
         """Get system status information"""
         try:
+            rag_system = get_rag_system()
             status = rag_system.get_system_status()
             nas_status = self.nas_connector.test_connection()
             auth_status = auth_manager.list_services()
@@ -174,6 +176,7 @@ class FAPSKnowledgeApp:
     def refresh_index(self) -> str:
         """Refresh the document index"""
         try:
+            rag_system = get_rag_system()
             if rag_system.refresh_index():
                 success_msg = "Index aktualisiert" if localization.current_language == "de" else "Index refreshed"
                 return f"✅ {success_msg}"
@@ -335,9 +338,14 @@ if __name__ == "__main__":
     # Initialize the RAG system
     logger.info("Initializing FAPS Knowledge Assistant...")
     
-    # Index documents on startup
+    # Index documents on startup (skip if services are not available)
     logger.info("Indexing documents...")
-    rag_system.index_documents()
+    try:
+        rag_system = get_rag_system()
+        rag_system.index_documents()
+        logger.info("Document indexing completed")
+    except Exception as e:
+        logger.warning(f"Document indexing failed (will work in demo mode): {e}")
     
     # Create and launch the interface
     interface = create_interface()
