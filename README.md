@@ -1,56 +1,61 @@
-# FAPS Knowledge Assistant
+# FAPS Wissenssystem
 
-A local Retrieval-Augmented Generation (RAG) system to organize and access information from FAPS NAS and web resources.
+Ein lokales Retrieval-Augmented Generation (RAG) System zur Organisation und zum Zugriff auf Informationen aus FAPS NAS und Webressourcen.
 
-## Features
+## Funktionen
 
-- 🔍 Search across multiple data sources with natural language
-- 🔗 Get direct download links to relevant files on the NAS
-- 🌐 Access information from authenticated web resources
-- 🖥️ Completely local deployment for data privacy
-- 🐳 Docker-based setup for easy deployment
-- 🔒 Secure token-based authentication
+- 🔍 Durchsuche mehrere Datenquellen mit natürlicher Sprache
+- 🔗 Erhalte direkte Download-Links zu relevanten Dateien auf dem NAS
+- 🌐 Greife auf Informationen aus geschützten Webressourcen zu
+- 🖥️ Vollständig lokale Bereitstellung für Datenschutz
+- 🐳 Docker-basiertes Setup für einfache Implementierung
+- 🔒 Sichere token-basierte Authentifizierung
+- 🌍 Verfügbar auf Deutsch und Englisch
 
-## Data Sources
+## Datenquellen
 
-- **NAS**: `\\fapsroot.faps.uni-erlangen.de` (read-only access)
+- **NAS**: `\\fapsroot.faps.uni-erlangen.de` (nur Lesezugriff)
 - **Wiki**: `https://wiki.faps.uni-erlangen.de/`
-- **Internal FAU**: `https://www.intern.fau.de/`
+- **Internes FAU**: `https://www.intern.fau.de/`
 
-## Architecture
+## Architektur
 
-- **Frontend**: Gradio web interface
-- **RAG Engine**: LlamaIndex for document processing and retrieval
-- **Vector DB**: ChromaDB for embedding storage
-- **LLM**: Ollama running gpt-oss:20b
-- **Data Connectors**: Custom connectors for NAS and web resources
-- **Authentication**: Browser token-based access for secured resources
+- **Frontend**: Gradio Webinterface mit FAPS Logo
+- **RAG-Engine**: LlamaIndex für Dokumentenverarbeitung und Retrieval
+- **Vektor-DB**: ChromaDB für Embedding-Speicherung
+- **LLM**: Ollama mit gpt-oss:20b
+- **Datenanbindungen**: Benutzerdefinierte Konnektoren für NAS und Webressourcen
+- **Authentifizierung**: Browser-Token-basierter Zugriff für gesicherte Ressourcen
 
 ## Setup
 
-1. Clone this repository
-2. Run `docker-compose up`
-3. Access the web interface at `http://localhost:7860`
-4. Complete the onboarding process to set up authentication tokens
+1. Repository klonen
+2. `docker-compose up` ausführen
+3. Webinterface unter `http://localhost:7860` aufrufen
+4. Onboarding-Prozess durchführen, um Authentifizierungs-Token einzurichten
 
 ## Onboarding
 
-First-time users need to complete an onboarding process:
-1. Access the web interface
-2. For web resources requiring authentication:
-   - Login to each service in a separate browser tab
-   - Generate and provide authentication tokens through the guided process
-   - Tokens are securely stored in your browser's local storage
+Erstbenutzer müssen einen Onboarding-Prozess abschließen:
+1. Zugriff auf das Webinterface
+2. Für Webressourcen, die eine Authentifizierung erfordern:
+   - Bei jedem Dienst in einem separaten Browser-Tab anmelden
+   - Authentifizierungs-Token durch den geführten Prozess generieren und bereitstellen
+   - Token werden sicher im lokalen Speicher des Browsers gespeichert
 
-## Configuration
+## Konfiguration
 
-The application uses the following default settings:
+Die Anwendung verwendet folgende Standardeinstellungen:
 
 ```
-# LLM Configuration
+# LLM-Konfiguration
 OLLAMA_MODEL=gpt-oss:20b
 ```
 
-## Development
+## Entwicklung
 
-This project includes a `.devcontainer` configuration for easy development in VS Code.
+Dieses Projekt enthält eine `.devcontainer`-Konfiguration für die einfache Entwicklung in VS Code.
+
+## Sprache
+
+Die Standardsprache der Benutzeroberfläche ist Deutsch. Die Sprache kann über die Einstellungen auf Englisch umgestellt werden.
