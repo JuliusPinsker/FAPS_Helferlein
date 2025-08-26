@@ -8,7 +8,7 @@ echo "🏛️ Setting up FAPS Chat with Ollama models..."
 # Check if Ollama is running
 if ! curl -s http://localhost:11434/api/tags > /dev/null; then
     echo "⚠️ Ollama is not running. Please start Ollama first:"
-    echo "   docker-compose up ollama -d"
+    echo "   ollama serve"
     exit 1
 fi
 
@@ -32,6 +32,6 @@ ollama pull qwen2.5
 echo "✅ Model setup complete!"
 echo ""
 echo "🚀 You can now start FAPS Chat with:"
-echo "   docker-compose up"
+echo "   docker compose up"
 echo ""
 echo "🌐 Access FAPS Chat at: http://localhost:8501"

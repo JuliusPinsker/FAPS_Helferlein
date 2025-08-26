@@ -12,6 +12,7 @@ from agno.memory.v2.db.sqlite import SqliteMemoryDb
 from agno.models.anthropic import Claude
 from agno.models.google import Gemini
 from agno.models.groq import Groq
+from agno.models.ollama import Ollama
 from agno.models.openai import OpenAIChat
 from agno.storage.sqlite import SqliteStorage
 from agno.team import Team
@@ -76,6 +77,8 @@ def create_uagi(
         model = Claude(id=model_name)
     elif provider == "groq":
         model = Groq(id=model_name)
+    elif provider == "ollama":
+        model = Ollama(id=model_name)
     else:
         raise ValueError(f"Unsupported model provider: {provider}")
     if model is None:

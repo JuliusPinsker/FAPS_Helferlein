@@ -15,6 +15,7 @@ A secure, local ChatGPT-like interface for FAPS (Friedrich-Alexander-Universitä
 ### Prerequisites
 
 - Docker and Docker Compose
+- **Ollama running locally** (install from https://ollama.ai)
 - At least 16GB RAM (for larger models)
 - 50GB+ free disk space
 
@@ -26,9 +27,13 @@ A secure, local ChatGPT-like interface for FAPS (Friedrich-Alexander-Universitä
    cd FAPS_Helferlein
    ```
 
-2. **Start Ollama service**
+2. **Ensure Ollama is running locally**
    ```bash
-   docker-compose up ollama -d
+   # Install Ollama if not already installed
+   # Visit https://ollama.ai for installation instructions
+   
+   # Start Ollama (if not already running)
+   ollama serve
    ```
 
 3. **Setup required models**
@@ -38,7 +43,7 @@ A secure, local ChatGPT-like interface for FAPS (Friedrich-Alexander-Universitä
 
 4. **Start FAPS Chat**
    ```bash
-   docker-compose up
+   docker compose up
    ```
 
 5. **Access the interface**
@@ -64,7 +69,7 @@ FAPS Chat uses the following Ollama models:
 ```
 ┌─────────────────┐    ┌──────────────┐    ┌─────────────────┐
 │   FAPS Chat     │    │   Ollama     │    │   Document      │
-│   (Streamlit)   │◄──►│   Service    │◄──►│   Storage       │
+│   (Streamlit)   │◄──►│   (External) │◄──►│   Storage       │
 │   Port: 8501    │    │   Port: 11434│    │   Local Files   │
 └─────────────────┘    └──────────────┘    └─────────────────┘
 ```
@@ -73,7 +78,7 @@ FAPS Chat uses the following Ollama models:
 
 ### Environment Variables
 
-- `OLLAMA_HOST`: Ollama service endpoint (default: `ollama:11434`)
+- `OLLAMA_HOST`: Ollama service endpoint (default: `host.docker.internal:11434` for external Ollama)
 - `AGNO_TELEMETRY`: Disable telemetry (set to `false`)
 
 ### Model Configuration
@@ -98,7 +103,7 @@ Edit `cookbook/examples/streamlit_apps/universal_agent_interface/utils.py` to mo
    pip install -r requirements.txt
    ```
 
-2. **Start Ollama locally**
+2. **Ensure Ollama is running locally**
    ```bash
    ollama serve
    ```
@@ -135,11 +140,11 @@ Edit `cookbook/examples/streamlit_apps/universal_agent_interface/utils.py` to mo
 ### Ollama Connection Issues
 
 ```bash
-# Check if Ollama is running
+# Check if Ollama is running locally
 curl http://localhost:11434/api/tags
 
-# Restart Ollama service
-docker-compose restart ollama
+# Start Ollama if not running
+ollama serve
 ```
 
 ### Model Download Issues
