@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: faps-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    command: ["sh", "-c", "ollama serve & sleep 30 && ollama pull qwen2.5:20b && wait"]
+
+  lancedb:
+    image: lancedb/lancedb:latest
+    container_name: faps-lancedb
+    volumes:
+      - lancedb_data:/data
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    environment:
+      - LANCEDB_DATA_DIR=/data
+
+  phidata:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: faps-assistant
+    volumes:
+      - ./app:/app
+      - nas_mount:/mnt/nas:ro
+    ports:
+      - "8501:8501"
+    depends_on:
+      - ollama
+      - lancedb
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - LANCEDB_URI=http://lancedb:8080
+      - UI_LANGUAGE=de
+      - TZ=Europe/Berlin
+      - PYTHONPATH=/app
+    restart: unless-stopped
+    networks:
+      - faps-network
+
+networks:
+  faps-network:
+    driver: bridge
+
+volumes:
+  ollama_data:
+    driver: local
+  lancedb_data:
+    driver: local
+  nas_mount:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "domain=FAPS,username=guest,password=,ro,vers=3.0"
+      device: "//fapsroot.faps.uni-erlangen.de"
