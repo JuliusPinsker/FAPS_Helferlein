@@ -1,1 +1,0 @@
-# FAPS Knowledge Assistant - UI Components
