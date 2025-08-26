@@ -8,7 +8,7 @@ from agno.utils.log import logger
 from css import CUSTOM_CSS
 from uagi import UAgIConfig, create_uagi, uagi_memory
 from utils import (
-    about_agno,
+    about_faps,
     add_message,
     display_tool_calls,
     example_inputs,
@@ -24,21 +24,33 @@ from utils import (
 
 nest_asyncio.apply()
 st.set_page_config(
-    page_title="UAgI",
-    page_icon="💎",
+    page_title="FAPS Chat",
+    page_icon="🏛️",
     layout="wide",
 )
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
 
 async def header():
-    st.markdown(
-        "<h1 class='heading'>Universal Agent Interface</h1>", unsafe_allow_html=True
-    )
-    st.markdown(
-        "<p class='subheading'>A Universal Interface for orchestrating multiple Agents</p>",
-        unsafe_allow_html=True,
-    )
+    # Display FAPS logo and title
+    col1, col2 = st.columns([1, 3])
+    
+    with col1:
+        # Display FAPS logo
+        try:
+            st.image("logo_faps.png", width=100)
+        except:
+            # Fallback if logo doesn't load
+            st.markdown("🏛️")
+    
+    with col2:
+        st.markdown(
+            "<h1 class='heading'>FAPS Chat</h1>", unsafe_allow_html=True
+        )
+        st.markdown(
+            "<p class='subheading'>A secure ChatGPT-like interface for FAPS sensitive documents</p>",
+            unsafe_allow_html=True,
+        )
 
 
 async def body() -> None:
@@ -209,7 +221,7 @@ async def main():
     await initialize_session_state()
     await header()
     await body()
-    await about_agno()
+    await about_faps()
 
 
 if __name__ == "__main__":

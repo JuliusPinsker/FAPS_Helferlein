@@ -48,19 +48,21 @@ async def add_message(
 
 
 async def selected_model() -> str:
-    """Display a model selector in the sidebar."""
+    """Display a model selector in the sidebar - FAPS Chat uses Ollama only."""
     model_options = {
-        "claude-3-7-sonnet": "anthropic:claude-3-7-sonnet-latest",
-        "gpt-4o": "openai:gpt-4o",
-        "gemini-2.5-pro": "google:gemini-2.5-pro-preview-03-25",
-        "llama-4-scout": "groq:meta-llama/llama-4-scout-17b-16e-instruct",
+        "gpt-oss:20b (Default)": "ollama:gpt-oss:20b",
+        "llama3.1:8b": "ollama:llama3.1:8b", 
+        "llama3.1": "ollama:llama3.1",
+        "codestral": "ollama:codestral",
+        "qwen2.5": "ollama:qwen2.5",
     }
 
     selected_model_key = st.sidebar.selectbox(
-        "Select a model",
+        "Select Ollama Model",
         options=list(model_options.keys()),
-        index=0,  # Default to claude-3-7-sonnet
+        index=0,  # Default to gpt-oss:20b
         key="model_selector",
+        help="FAPS Chat uses Ollama models only for data privacy"
     )
     model_id = model_options[selected_model_key]
     return model_id
@@ -199,20 +201,35 @@ async def example_inputs() -> None:
             )
 
 
-async def about_agno():
-    """Show information about Agno in the sidebar"""
+async def about_faps():
+    """Show information about FAPS Chat in the sidebar"""
     with st.sidebar:
-        st.markdown("### About Agno ✨")
+        st.markdown("### About FAPS Chat 🏛️")
         st.markdown("""
-        Agno is a lightweight library for building Reasoning Agents.
-
-        [GitHub](https://github.com/agno-agi/agno) | [Docs](https://docs.agno.com)
+        FAPS Chat is a secure, local ChatGPT-like interface for FAPS 
+        (Friedrich-Alexander-Universität) sensitive documents.
+        
+        **Key Features:**
+        - 🔒 Local processing with Ollama
+        - 📄 Document ingestion from FAPS sources
+        - 🛡️ Complete data privacy
+        - 🤖 Powered by Agno framework
         """)
 
-        st.markdown("### Need Help?")
-        st.markdown(
-            "If you have any questions, catch us on [discord](https://agno.link/discord) or post in the community [forum](https://agno.link/community)."
-        )
+        st.markdown("### Data Sources")
+        st.markdown("""
+        - FAU Internal Portal
+        - FAPS Wiki  
+        - IDM Portal
+        - Network Drives
+        """)
+        
+        st.markdown("### Technical Stack")
+        st.markdown("""
+        - **Models**: Ollama (gpt-oss:20b, nomic-embed-text)
+        - **Framework**: Agno
+        - **Deployment**: Docker Compose
+        """)
 
 
 def is_json(myjson):
