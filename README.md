@@ -27,35 +27,163 @@ Ein lokales Retrieval-Augmented Generation (RAG) System zur Organisation und zum
 - **Datenanbindungen**: Benutzerdefinierte Konnektoren für NAS und Webressourcen
 - **Authentifizierung**: Browser-Token-basierter Zugriff für gesicherte Ressourcen
 
-## Setup
+## Schnellstart
 
-1. Repository klonen
-2. `docker-compose up` ausführen
-3. Webinterface unter `http://localhost:7860` aufrufen
-4. Onboarding-Prozess durchführen, um Authentifizierungs-Token einzurichten
+### Voraussetzungen
+- Docker und Docker Compose
+- Mindestens 8GB RAM (für gpt-oss:20b Modell)
+- GPU-Unterstützung empfohlen (NVIDIA mit CUDA)
+
+### Installation
+
+1. **Repository klonen:**
+```bash
+git clone https://github.com/JuliusPinsker/FAPS_Helferlein.git
+cd FAPS_Helferlein
+```
+
+2. **System initialisieren:**
+```bash
+./setup.sh
+```
+
+3. **Services starten:**
+```bash
+docker-compose up -d
+```
+
+4. **Modelle herunterladen:**
+```bash
+./pull_models.sh
+```
+
+5. **Webinterface öffnen:**
+   - Navigieren Sie zu `http://localhost:7860`
+   - Führen Sie den Onboarding-Prozess durch
 
 ## Onboarding
 
-Erstbenutzer müssen einen Onboarding-Prozess abschließen:
-1. Zugriff auf das Webinterface
-2. Für Webressourcen, die eine Authentifizierung erfordern:
-   - Bei jedem Dienst in einem separaten Browser-Tab anmelden
-   - Authentifizierungs-Token durch den geführten Prozess generieren und bereitstellen
-   - Token werden sicher im lokalen Speicher des Browsers gespeichert
+Beim ersten Start müssen Sie die Authentifizierung konfigurieren:
+
+### 1. NAS-Verbindung
+- Automatische Verbindung zu `\\fapsroot.faps.uni-erlangen.de`
+- Nur Lesezugriff (sicherheitsbedingt)
+
+### 2. Web-Authentifizierung
+Für geschützte Webressourcen:
+
+**Wiki-Authentifizierung:**
+1. Öffnen Sie `https://wiki.faps.uni-erlangen.de/` in einem neuen Tab
+2. Melden Sie sich mit Ihren FAU-Zugangsdaten an
+3. Kopieren Sie den Session-Cookie
+4. Fügen Sie ihn in das Token-Feld ein
+
+**Intern.FAU-Authentifizierung:**
+1. Öffnen Sie `https://www.intern.fau.de/` in einem neuen Tab
+2. Melden Sie sich an
+3. Kopieren Sie den Session-Cookie oder Bearer-Token
+4. Fügen Sie ihn in das Token-Feld ein
 
 ## Konfiguration
 
-Die Anwendung verwendet folgende Standardeinstellungen:
-
-```
+### Umgebungsvariablen (.env)
+```bash
 # LLM-Konfiguration
 OLLAMA_MODEL=gpt-oss:20b
+
+# NAS-Konfiguration
+NAS_HOST=fapsroot.faps.uni-erlangen.de
+
+# Web-URLs
+WIKI_URL=https://wiki.faps.uni-erlangen.de/
+INTERN_FAU_URL=https://www.intern.fau.de/
+
+# Anwendungseinstellungen
+DEFAULT_LANGUAGE=de
+LOG_LEVEL=INFO
 ```
+
+### Sprachen
+- **Standard**: Deutsch (de)
+- **Verfügbar**: Englisch (en)
+- Umschaltung über die Benutzeroberfläche
 
 ## Entwicklung
 
-Dieses Projekt enthält eine `.devcontainer`-Konfiguration für die einfache Entwicklung in VS Code.
+### VS Code Development Container
+```bash
+# Mit VS Code öffnen
+code .
+# "Reopen in Container" auswählen
+```
 
-## Sprache
+### Lokale Entwicklung
+```bash
+# Python-Abhängigkeiten installieren
+pip install -r requirements.txt
 
-Die Standardsprache der Benutzeroberfläche ist Deutsch. Die Sprache kann über die Einstellungen auf Englisch umgestellt werden.
+# Externe Services starten
+docker-compose up chromadb ollama -d
+
+# Anwendung starten
+python app.py
+```
+
+### Projektstruktur
+```
+├── app.py                 # Hauptanwendung (Gradio Interface)
+├── src/
+│   ├── config.py         # Konfigurationsmanagement
+│   ├── localization.py   # Mehrsprachigkeit
+│   ├── auth.py           # Authentifizierungssystem
+│   ├── nas_connector.py  # NAS-Anbindung
+│   ├── web_scraper.py    # Web-Scraping
+│   └── rag_system.py     # RAG-Engine
+├── locales/              # Übersetzungsdateien
+├── docker-compose.yml    # Container-Orchestrierung
+└── .devcontainer/        # VS Code Dev Container
+```
+
+## Sicherheit
+
+- **Nur-Lese-Zugriff** auf NAS-Ressourcen
+- **Token-basierte** Authentifizierung (keine Passwort-Speicherung)
+- **Lokale Verarbeitung** (keine Cloud-Services)
+- **Isolierte Container** für alle Services
+- **CSRF-Schutz** für Web-Authentifizierung
+
+## Fehlerbehebung
+
+### Container starten nicht
+```bash
+# Logs überprüfen
+docker-compose logs
+
+# Services neu starten
+docker-compose restart
+```
+
+### Modell-Download schlägt fehl
+```bash
+# Manueller Download
+docker-compose exec ollama ollama pull gpt-oss:20b
+```
+
+### NAS-Verbindung funktioniert nicht
+- Überprüfen Sie die Netzwerkverbindung zu `fapsroot.faps.uni-erlangen.de`
+- Stellen Sie sicher, dass Sie im FAU-Netzwerk oder VPN sind
+
+### Authentifizierung schlägt fehl
+- Überprüfen Sie die Token-Gültigkeit
+- Erneuern Sie die Session-Cookies bei Bedarf
+
+## Support
+
+Bei Problemen oder Fragen:
+1. Überprüfen Sie die Logs in `logs/app.log`
+2. Konsultieren Sie die Dokumentation
+3. Erstellen Sie ein Issue im GitHub-Repository
+
+## Lizenz
+
+Dieses Projekt steht unter der GPL-3.0 Lizenz. Siehe [LICENSE](LICENSE) für Details.
