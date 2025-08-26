@@ -9,6 +9,13 @@ if ! docker info > /dev/null 2>&1; then
     exit 1
 fi
 
+# Check if Ollama is running locally
+if ! curl -s http://localhost:11434/api/tags > /dev/null; then
+    echo "⚠️ Ollama is not running locally. Please start Ollama first:"
+    echo "   ollama serve"
+    exit 1
+fi
+
 # Create data directory if it doesn't exist
 mkdir -p ./data
 
