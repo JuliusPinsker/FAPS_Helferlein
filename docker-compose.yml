@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: faps-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  faps-chat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: faps-chat-app
+    ports:
+      - "8501:8501"  # Streamlit
+      - "7777:7777"  # FastAPI/Playground (if needed)
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      - OLLAMA_HOST=ollama:11434
+      - AGNO_TELEMETRY=false
+    volumes:
+      - ./data:/app/data  # For document storage
+    restart: unless-stopped
+    
+volumes:
+  ollama_data:
+    driver: local

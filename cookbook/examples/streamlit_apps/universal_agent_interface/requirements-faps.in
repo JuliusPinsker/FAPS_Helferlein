@@ -1,0 +1,24 @@
+# FAPS Chat Requirements - Ollama Only Configuration
+agno
+streamlit
+nest_asyncio
+duckdb
+qdrant-client
+sqlalchemy
+aiofiles
+lancedb
+tantivy
+pypdf
+python-docx
+beautifulsoup4
+ddgs
+yfinance
+
+# Optional: Only if you need web search capabilities
+# exa_py
+
+# Removed external model providers for FAPS Chat security:
+# anthropic
+# google-genai  
+# groq
+# openai
