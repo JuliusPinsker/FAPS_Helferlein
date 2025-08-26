@@ -38,13 +38,13 @@ services:
       - ollama_data:/root/.ollama
     environment:
       - OLLAMA_ORIGINS=*
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
     networks:
       - faps-network
 
