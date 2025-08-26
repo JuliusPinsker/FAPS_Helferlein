@@ -69,7 +69,7 @@ FAPS Chat uses the following Ollama models:
 ```
 ┌─────────────────┐    ┌──────────────┐    ┌─────────────────┐
 │   FAPS Chat     │    │   Ollama     │    │   Document      │
-│   (Streamlit)   │◄──►│   Service    │◄──►│   Storage       │
+│   (Streamlit)   │◄──►│   (External) │◄──►│   Storage       │
 │   Port: 8501    │    │   Port: 11434│    │   Local Files   │
 └─────────────────┘    └──────────────┘    └─────────────────┘
 ```
@@ -78,7 +78,7 @@ FAPS Chat uses the following Ollama models:
 
 ### Environment Variables
 
-- `OLLAMA_HOST`: Ollama service endpoint (default: `ollama:11434`)
+- `OLLAMA_HOST`: Ollama service endpoint (default: `host.docker.internal:11434` for external Ollama)
 - `AGNO_TELEMETRY`: Disable telemetry (set to `false`)
 
 ### Model Configuration
