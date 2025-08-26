@@ -1,0 +1,1 @@
+# FAPS Knowledge Assistant - Security Components
