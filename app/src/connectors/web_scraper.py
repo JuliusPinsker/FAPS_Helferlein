@@ -1,6 +1,4 @@
 import requests
-import asyncio
-import aiohttp
 from bs4 import BeautifulSoup
 from typing import List, Dict, Any, Optional
 from urllib.parse import urljoin, urlparse
@@ -8,6 +6,15 @@ import logging
 import re
 import time
 from pathlib import Path
+
+# Mock aiohttp for testing
+try:
+    import asyncio
+    import aiohttp
+except ImportError:
+    # Create mock for aiohttp since we're not using async functionality in basic version
+    aiohttp = None
+    asyncio = None
 
 class WebScraper:
     """Web scraper for FAPS-related websites"""

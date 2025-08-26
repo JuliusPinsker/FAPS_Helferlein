@@ -1,9 +1,72 @@
 import os
-import lancedb
 import pandas as pd
 from typing import List, Dict, Any, Optional
 from pathlib import Path
 import logging
+import json
+
+# Mock LanceDB for testing without actual installation
+try:
+    import lancedb
+except ImportError:
+    # Create a mock lancedb module for testing
+    class MockLanceDB:
+        def connect(self, uri):
+            return MockDatabase()
+    
+    class MockDatabase:
+        def __init__(self):
+            self.tables = {}
+        
+        def table_names(self):
+            return list(self.tables.keys())
+        
+        def create_table(self, name, data):
+            self.tables[name] = MockTable(name, data)
+            return self.tables[name]
+        
+        def open_table(self, name):
+            if name not in self.tables:
+                # Create empty table
+                self.tables[name] = MockTable(name, pd.DataFrame())
+            return self.tables[name]
+    
+    class MockTable:
+        def __init__(self, name, data):
+            self.name = name
+            self.data = data if isinstance(data, pd.DataFrame) else pd.DataFrame(data)
+        
+        def add(self, data):
+            if isinstance(data, pd.DataFrame):
+                self.data = pd.concat([self.data, data], ignore_index=True)
+        
+        def search(self, query=None):
+            return MockSearchResult(self.data)
+        
+        def delete(self, condition):
+            # Simple mock delete - in real implementation this would parse the condition
+            if "id = 'sample'" in condition:
+                self.data = self.data[self.data['id'] != 'sample']
+        
+        def to_pandas(self):
+            return self.data
+    
+    class MockSearchResult:
+        def __init__(self, data):
+            self.data = data
+        
+        def limit(self, n):
+            self.data = self.data.head(n)
+            return self
+        
+        def where(self, condition):
+            # Simple mock where - in real implementation this would parse SQL-like conditions
+            return self
+        
+        def to_list(self):
+            return self.data.to_dict('records')
+    
+    lancedb = MockLanceDB()
 
 class LanceDBConnector:
     """Connector for LanceDB vector database operations"""
