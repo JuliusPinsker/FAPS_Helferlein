@@ -74,7 +74,7 @@ class RAGSystem:
                 return f"Mock chat response for query about FAPS knowledge system."
         
         class MockEmbedding:
-            def get_text_embedding(self, text):
+            def _get_text_embedding(self, text):
                 # Return a simple mock embedding
                 return [0.1] * 384
         
