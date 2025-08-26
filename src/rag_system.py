@@ -67,7 +67,7 @@ class RAGSystem:
         logger.warning("Using mock LLM - Ollama not available")
         
         class MockLLM:
-            def complete(self, prompt):
+            def complete(self, prompt, **kwargs):
                 return f"Mock response for: {prompt[:100]}..."
             
             def chat(self, messages):
